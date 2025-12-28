@@ -1,20 +1,14 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+import joblib
+import numpy as np
 
 app = FastAPI()
 
-# Define input format
-class AddInput(BaseModel):
-    a: float
-    b: float
+# Load once when server starts
+model = joblib.load("svm_model.pkl")
 
-# Define API endpoint
-@app.post("/add")
-def add_numbers(data: AddInput):
-    result = data.a * data.b
-    return {
-        "a": data.a,
-        "b": data.b,
-        "sum": result
-    }
-
+@app.post("/predict")
+def predict(features: list):
+    x = np.array(features).reshape(1, -1)
+    prediction = model.predict(x)
+    return {"prediction": int(prediction[0])}
