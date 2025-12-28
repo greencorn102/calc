@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 import joblib
 import numpy as np
+import os
 
 app = FastAPI()
 
@@ -13,4 +14,5 @@ def predict(features: list):
     x = np.array(features).reshape(1, -1)
     prediction = model.predict(x)
     return {"prediction": int(prediction[0])}
+
 
